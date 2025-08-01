@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay Fees</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 40px;
+        }
+        .card + .card {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form action="/fees/save" method="post">
+        <input type="hidden" name="studentId" th:value="${student.id}" />
+
+        <!-- Student Details Card -->
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-person-circle"></i> Student Details
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" th:value="${student.name}" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" class="form-control" th:value="${student.phone}" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-control" th:value="${student.address}" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" th:value="${student.email}" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrolled Courses Card -->
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-book-fill"></i> Enrolled Courses
+            </div>
+            <div class="card-body" th:if="${enrollcourse != null and !#lists.isEmpty(enrollcourse)}">
+                <div class="mb-3" th:each="ec : ${enrollcourse}">
+                    <div class="border p-3 rounded bg-light mb-2">
+                        <p><strong>Course Name:</strong> <span th:text="${ec.courseName}"></span></p>
+                        <p><strong>Course Code:</strong> <span th:text="${ec.courseId}"></span></p>
+                        <p><strong>Enrollment ID:</strong> <span th:text="${ec.enrollmentId}"></span></p>
+                        <p><strong>Fees:</strong> ₹<span th:text="${ec.courseFee}"></span></p>
+                        <p><strong>Remark:</strong> <span th:text="${ec.remark}"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" th:if="${enrollcourse == null or #lists.isEmpty(enrollcourse)}">
+                <p class="text-muted">No enrollments found for this student.</p>
+            </div>
+        </div>
+
+        <!-- Fee Payment Form Card -->
+        <div class="card shadow">
+            <div class="card-header bg-warning">
+                <i class="bi bi-credit-card-2-front-fill"></i> Fee Payment Form
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Select Course Enrollment</label>
+                    <select class="form-select" name="enrollmentId" required>
+                        <option value="">-- Select Enrollment --</option>
+                        <option th:each="enroll : ${enrollments}" th:value="${enroll.id}" th:text="${enroll.course_id}"></option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Amount</label>
+                    <input type="number" class="form-control" name="amount" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Payment Mode</label>
+                    <select class="form-select" name="paymentMode" required>
+                        <option>Cash</option>
+                        <option>UPI</option>
+                        <option>Bank Transfer</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Comment</label>
+                    <input type="text" class="form-control" name="remark" />
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle-fill"></i> Submit Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- Bootstrap JS (Optional for interactivity) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
